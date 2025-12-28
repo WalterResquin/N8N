@@ -1,0 +1,398 @@
+{
+  "name": "Assistente de Atendimento",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "receber-mensagem-zapi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1440,
+        -96
+      ],
+      "id": "0e94559e-6-9a28812e2e45",
+      "name": "Verifica Nova Mensagem",
+      "webhookId": "22ff9029-4182-b6f3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "271a176b-3f5c-4e85-a27e-b427bd07ffad",
+              "leftValue": "={{ $json.body.isGroup }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "6a712d85-f576-4a51-9804-27b6ce424bd2",
+              "leftValue": "={{ $json.body.isNewsletter }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "353d327f-549e-4092-9ab6-d3119198270c",
+              "leftValue": "={{ $json.body.broadcast }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1216,
+        -96
+      ],
+      "id": "94a18bba-6bb9-4bbf-9ef0-bd7312d6159a",
+      "name": "Verifica se não é mensagem de grupo ou broadcast"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -992,
+        0
+      ],
+      "id": "d7b350b3-573d-4508-ba73-a16b6a09db25",
+      "name": "Finaliza"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1KCxkBwtvlhNU8rk1Pd7Qv3tyDLAGwpbEGNNWYKgEM0g",
+          "mode": "list",
+          "cachedResultName": "Planilha N8N",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1335339199,
+          "mode": "list",
+          "cachedResultName": "Case2",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "WhatsApp": "={{ $json.idConversa }}",
+            "Nome": "={{ $json.Nome }}"
+          },
+          "matchingColumns": [
+            "WhatsApp"
+          ],
+          "schema": [
+            {
+              "id": "Nome",
+              "displayName": "Nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "WhatsApp",
+              "displayName": "WhatsApp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -768,
+        -192
+      ],
+      "id": "a4c1815f-d7d6-4f0f-b4c1-16f6613dea43",
+      "name": "Grava dados do remetente na planilha",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "vnYJxXHhIEFOEoZh",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Captura dados do remetente').item.json.idConversa }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -416,
+        32
+      ],
+      "id": "de34c765-9f41-4d3e-a641-5bc91b2aebf4",
+      "name": "Base de dados"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-4-maverick-17b-128e-instruct",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        32
+      ],
+      "id": "951ffecf-63d1-4de9-bf58-349c890d8dd5",
+      "name": "Modelo LLM - Groq",
+      "credentials": {
+        "groqApi": {
+          "id": "SCfqtOoktmKAqd4t",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.z-api.io/instances/[INSTANCIA]/token/[TOKEN]/send-text",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "client-token",
+              "value": "[Security-key]"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "phone",
+              "value": "={{ $('Captura dados do remetente').item.json.idConversa }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -192,
+        -192
+      ],
+      "id": "3b6b6143-ee72-47b5-a65e-471f58227fa9",
+      "name": "Envia resposta"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        32,
+        -192
+      ],
+      "id": "2075ce93-34a5-4e15-9ebd-7acc1b22514c",
+      "name": "Fim"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Captura dados do remetente').item.json.mensagem }}",
+        "options": {
+          "systemMessage": "Você é o \"Faísca\", o assistente virtual gente boa e prestativo da oficina de serralheria [NOME DA SERRALHERIA], especialista em soldagem e serralheria; seu objetivo é realizar um atendimento cordial, descontraído e educado no WhatsApp, sempre iniciando a conversa se apresentando e perguntando o nome do cliente antes de qualquer outra coisa. Informe que os serviços oferecidos incluem reparos em portões e grades, soldagem de estruturas metálicas de diversos tipos de metais, fabricação de móveis industriais e pequenos reparos a domicílio, utilizando sempre um tom de voz robusto, mas leve, com metáforas do mundo da serralheria (ex: \"atendimento firme como solda bem feita\") e emojis temáticos; caso não saiba responder algo técnico, diga com bom humor que vai \"levantar a máscara de solda\" para perguntar ao patrão e logo retorna, mantendo sempre a organização e clareza nas mensagens."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -544,
+        -192
+      ],
+      "id": "8ca1fc72-2325-4e36-8d02-ce3ce57c77fd",
+      "name": "Agente de IA"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7dfc4d10-1182-469d-8a48-df90f6bb335d",
+              "name": "idConversa",
+              "value": "={{ $('Verifica Nova Mensagem').item.json.body.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "e2486900-cfc3-4e1c-a6eb-0f550c90ff02",
+              "name": "mensagem",
+              "value": "={{ $('Verifica Nova Mensagem').item.json.body.text.message }}",
+              "type": "string"
+            },
+            {
+              "id": "037b6044-b16f-4894-9ec8-c6765ced3cec",
+              "name": "Nome",
+              "value": "={{ $('Verifica Nova Mensagem').item.json.body.chatName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -992,
+        -192
+      ],
+      "id": "91b853c7-1993-4813-8b9f-2a8d466c480f",
+      "name": "Captura dados do remetente"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Verifica Nova Mensagem": {
+      "main": [
+        [
+          {
+            "node": "Verifica se não é mensagem de grupo ou broadcast",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica se não é mensagem de grupo ou broadcast": {
+      "main": [
+        [
+          {
+            "node": "Captura dados do remetente",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Finaliza",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Grava dados do remetente na planilha": {
+      "main": [
+        [
+          {
+            "node": "Agente de IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Base de dados": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agente de IA",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Modelo LLM - Groq": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente de IA",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia resposta": {
+      "main": [
+        [
+          {
+            "node": "Fim",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente de IA": {
+      "main": [
+        [
+          {
+            "node": "Envia resposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Captura dados do remetente": {
+      "main": [
+        [
+          {
+            "node": "Grava dados do remetente na planilha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "d57af7af-e2fe-4559-bb33-9ab95ea3e335",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "aa55aadd6399d2902919cece1d80325553bcd2706dc12c52f9d7d7e40b300eb8"
+  },
+  "id": "nOyFqNMgKXzAUZ2Z",
+  "tags": []
+}
