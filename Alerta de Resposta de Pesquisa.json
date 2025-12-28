@@ -1,0 +1,434 @@
+{
+  "name": "Alerta de resposta de pesquisa",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "18j6kGakPQVGhF0x9X3h2OxshItflOJxeANUj0aWsYcg",
+          "mode": "list",
+          "cachedResultName": "RPA & IA - Feedback (respostas)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1562093031,
+          "mode": "list",
+          "cachedResultName": "Respostas ao formulário 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        -16
+      ],
+      "id": "8c64c379-1cbe-4b87-8d3a-86ecf798242f",
+      "name": "Verifica Nova Resposta",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "usA90YB0LDhHXYhk",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ea826141-fa92-45d8-a77f-e34cf3674404",
+              "leftValue": "={{ $json.campo_contato }}",
+              "rightValue": "Sim",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        192,
+        -16
+      ],
+      "id": "d665aca2-e83f-406b-a5c4-b68f76981323",
+      "name": "Lead Solicitou Contato?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a30f078f-a1cf-41a8-a8c2-f9adccfdfc1b",
+              "leftValue": "={{ $json.name }}",
+              "rightValue": "Time Vendas",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        640,
+        -112
+      ],
+      "id": "8bfe115c-565f-4d6e-a81f-5a9414dc641c",
+      "name": "Filtra Grupo Vendas"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        416,
+        80
+      ],
+      "id": "6d8d5daa-8563-4208-ab85-46ba15a3dd0e",
+      "name": "Finaliza"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        864,
+        -16
+      ],
+      "id": "bc2a481e-18bb-4541-b4c8-0274e4bade06",
+      "name": "Finaliza1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.z-api.io/instances/[INSTANCIA]/token/[TOKEN]/send-text",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "client-token",
+              "value": "[Security-key]"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "phone",
+              "value": "={{ $json.grupo }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.mensagem }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1088,
+        -208
+      ],
+      "id": "d6ffb642-c5b4-49f7-98bb-2d546831e054",
+      "name": "Envia MSG para Grupo"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "42347a89-ac12-4e3a-b98f-241ee9c0a448",
+              "name": "grupo",
+              "value": "={{ $json.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "14b7fb3e-754f-4571-a4f3-602fdbf72834",
+              "name": "mensagem",
+              "value": "=Fala, time!\nTivemos uma nova resposta para a pesquisa do evento que participamos. A pessoa solicita um contato do time comercial/ténico.\nValeu!\n\nDados de contato:\n\n{{ $('Captura Dados').item.json.Nome }}\n{{ $('Captura Dados').item.json.Empresa }}\n{{ $('Captura Dados').item.json.Email }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        864,
+        -208
+      ],
+      "id": "19b00657-30e6-4141-92a0-e34cf6989534",
+      "name": "Seta Mensagem Para Enviar"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dbbec2b8-6ed3-4071-8beb-6c32a401d561",
+              "name": "campo_contato",
+              "value": "={{ $json['Gostaria de agendar uma conversa com um de nossos especialistas para um diagnóstico gratuito?'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ee048d75-d04f-4f21-bc93-9138a00f224a",
+              "name": "Nome",
+              "value": "={{ $json.Nome }}",
+              "type": "string"
+            },
+            {
+              "id": "ad309d6d-8d07-4ca0-928a-3a4bfaf386e1",
+              "name": "Email",
+              "value": "={{ $json['E-mail'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ccbaff98-51b9-4302-9843-3ee1465e10a0",
+              "name": "Empresa",
+              "value": "={{ $json.Empresa }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -32,
+        -16
+      ],
+      "id": "24e6a97d-79ba-4549-a7a4-f73c1e8a4d0c",
+      "name": "Captura Dados"
+    },
+    {
+      "parameters": {
+        "content": "## Trigger",
+        "height": 304,
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -320,
+        -160
+      ],
+      "typeVersion": 1,
+      "id": "c61047bc-8030-4675-bada-5dfcbb7ce883",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Valida Solicitação",
+        "height": 304,
+        "width": 416,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -80,
+        -160
+      ],
+      "typeVersion": 1,
+      "id": "d1e33a7e-5572-4e6f-a7f5-0931f5b94bad",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Define o grupo de WhatsApp",
+        "height": 224,
+        "width": 416,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        368,
+        -176
+      ],
+      "typeVersion": 1,
+      "id": "21ea1c2d-a228-471d-b01e-d9e78f696971",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "url": "https://api.z-api.io/instances/[INSTANCIA]/token/[TOKEN]/groups",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "1"
+            },
+            {
+              "name": "pageSize",
+              "value": "10"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "client-token",
+              "value": "[Security-key]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        416,
+        -112
+      ],
+      "id": "7eb9b350-ba7a-4e7d-8284-e12a959e106d",
+      "name": "Lista Grupos WhastApp"
+    },
+    {
+      "parameters": {
+        "content": "## Seta Mensagem e avisa o time",
+        "height": 240,
+        "width": 448,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        800,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "8531f1fa-1a90-4a10-9542-a538bad41f97",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Verifica Nova Resposta": {
+      "main": [
+        [
+          {
+            "node": "Captura Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Solicitou Contato?": {
+      "main": [
+        [
+          {
+            "node": "Lista Grupos WhastApp",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Finaliza",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtra Grupo Vendas": {
+      "main": [
+        [
+          {
+            "node": "Seta Mensagem Para Enviar",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Finaliza1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seta Mensagem Para Enviar": {
+      "main": [
+        [
+          {
+            "node": "Envia MSG para Grupo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Captura Dados": {
+      "main": [
+        [
+          {
+            "node": "Lead Solicitou Contato?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lista Grupos WhastApp": {
+      "main": [
+        [
+          {
+            "node": "Filtra Grupo Vendas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "92d1448f-6bb3-4fd4-ad97-ce1a9e81b9bf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "aa55aadd6399d2902919cece1d80325553bcd2706dc12c52f9d7d7e40b300eb8"
+  },
+  "id": "Wv0VuOtSEgK2LG9O",
+  "tags": []
+}
