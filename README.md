@@ -1,29 +1,32 @@
-🚀 Automação de Gestão de Leads: Google Sheets + WhatsApp API
-Este projeto consiste em um fluxo de automação desenvolvido no N8N para otimizar o tempo de resposta do time comercial. O sistema monitora novas entradas em uma planilha de pesquisa (provenientes do Google Forms) e notifica instantaneamente o time de vendas via WhatsApp sempre que um lead demonstra interesse em contato.
+🤖 Portfólio de Automações & IA (n8n)
+Bem-vindo ao meu repositório de soluções em automação de processos utilizando n8n. Este espaço é dedicado a demonstrar como o uso de ferramentas low-code, integração de APIs e Inteligência Artificial podem otimizar fluxos de trabalho, reduzir tarefas manuais e aumentar a eficiência operacional.
 
-📋 Problema Real
-Empresas perdem leads por demora no primeiro contato. Dados estagnados em planilhas dependem de verificação manual, o que gera gargalos.
+🎯 Objetivo
+O objetivo deste repositório é documentar projetos práticos que resolvem problemas reais de negócio, indo desde a simples captura de dados até assistentes complexos baseados em IA. Cada pasta deste repositório contém um projeto completo com sua respectiva documentação e arquivos de importação (.json).
 
-💡 Solução
-Uma automação "real-time" que filtra interesse real de compra e/ou demonstração e entrega os dados do lead diretamente no bolso (WhatsApp) do time comercial e técnico.
+🛠️ Tecnologias e Habilidades Demonstradas
+Neste repositório, você encontrará implementações que utilizam:
 
-🛠️ Tecnologias Utilizadas
-N8N: Orquestrador de automação (Cloud).
+Conexão de APIs: Integrações via HTTP Request (REST APIs).
 
-Google Sheets API: Como banco de dados e gatilho.
+Lógica de Fluxo: Uso de nós condicionais, filtros, loops e gatilhos.
 
-Z-API: Integração com a API do WhatsApp.
+Inteligência Artificial: Implementação de agentes de IA e LLMs.
 
-JSON: Para manipulação e tratamento de dados.
+Banco de Dados & Planilhas: Persistência de dados em Google Sheets e outras ferramentas.
 
-⚙️ Funcionalidades do Workflow
-Monitoramento Ativo: O nó do Google Sheets observa novas linhas na planilha.
+🚀 Projetos no RepositórioProjetoDescrição ResumidaTecnologias Chave01. Gestão de LeadsMonitoramento de formulários e alerta em tempo real para times de vendas.Google Sheets, WhatsApp API02. Assistente de IAAgente inteligente para atendimento ao cliente e triagem de serviços.Groq, Llama 3, Z-API(Novos projetos serão adicionados à medida que o portfólio evolui)
 
-Filtro Inteligente: Um nó de condição (If) verifica se o campo de "Desejo de Contato" foi preenchido com "Sim".
+⚙️ Como Utilizar
+Navegue até a pasta do projeto desejado.
 
-Deduplicação e Tratamento: Garantia de que a mensagem seja enviada somente ao grupo específico.
+Leia o arquivo README.md específico do projeto para entender as dependências.
 
-Notificação Formatada: Envio de mensagem estruturada para o grupo do WhatsApp com os dados de contato do lead (Nome, Empresa, telefone/e-mail).
+Faça o download do arquivo .json do workflow.
 
-👨‍💻 Autor
-Walter Resquin - Desenvolvedor de Automações. Localizado em: São Caetano do Sul - SP.
+Importe no seu ambiente n8n (Settings > Import from File).
+
+👨‍💻 Sobre Mim
+Atuo no setor de tecnologia com foco em RPA (Robotic Process Automation) e IA, desenvolvendo soluções que unem a robustez da automação com a agilidade das ferramentas modernas de integração.
+
+📍 Localizado em: São Caetano do Sul - SP
